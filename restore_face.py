@@ -99,12 +99,16 @@ print(np.size(weight,1))
 print(np.size(weight,0))
 
 
-face = np.dot(weight,np.transpose(np.dot(A,C_vectors)))
-for i in range(k):
+face = np.dot((A_eigenvectors),weight)
+
+face = np.transpose(face)
+print(face)
+for i in range(data_set):
     face[i] = face[i] + p_I
-face_show = list()
-for i in range(k):
-    face_show =  np.reshape(face[i],(256,256))
-    cv2.imshow(str(i+1),face_show)
+show_face = list()
+for i in range(data_set):
+    show_face = np.reshape(face[i],(256,256))
+    print(show_face)
+    cv2.imshow(str(i+1),show_face)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
