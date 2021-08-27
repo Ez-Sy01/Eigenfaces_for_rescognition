@@ -20,7 +20,7 @@ def viewing_Eigenface(k,C_vectors):
 def fn(data_set,name = ''):
     filename = list()
     for i in range(data_set):
-        filename.append('E:\python\python_world/faces/' + name + str(i+1 ) + '.jpg')
+        filename.append('E:\python\python_world/faces/only_face' + name + str(i+1 ) + '.PNG')
     return filename
 
 def I_image(data_set,filename):
@@ -47,8 +47,8 @@ def phi_image(data_set,g_I,p_I):
 
 def eigen_image(C):
     eigen_val,eigen_vec = linalg.eig(C)
-    masking_sort = np.argsort(eigen_val)
-    C_values,C_vectors = np.sort(eigen_val),list()
+    masking_sort = np.argsort(eigen_val)[::-1]
+    C_values,C_vectors = np.sort(eigen_val)[::-1],list()
     for i in masking_sort:
         C_vectors.append(eigen_vec[i])
     return C_values,C_vectors
@@ -67,15 +67,15 @@ def Euclidean_distance_weight(weight,weight_test):
 
 data_set = 20
 
-test_set = 8
+test_set = 7
 
 #register_images
-filename = fn(data_set) # image_name
+filename = fn(data_set,'/OF_') # image_name
 
 I = I_image(data_set,filename) # cv2_image(original)
 
 #resgister_input(test)_image
-testname = fn(test_set,'test_')
+testname = fn(test_set,'_test/OFT_')
 
 t_I = I_image(test_set,testname)
 
@@ -115,3 +115,27 @@ C_values, C_vectors = eigen_image(C)
 #viewing_eigenFaces
 k = 10
 viewing_Eigenface(k,C_vectors)
+
+#make weight -> train_set
+A_eigenvectors = list()
+for i in range(k):
+    A_eigenvectors.append(np.dot(A,C_vectors[i]))
+weight = np.dot(A_eigenvectors,A)
+
+#make weight -> input image
+weight_test = np.dot(A_eigenvectors,t_A)
+
+# Euclidean distance - weight_base - face recognition
+
+# Euclidean distance -> classify k-th face image
+threshold = 50000000
+Euclidean_result,distance_val = Euclidean_distance_weight(weight,weight_test)
+count = 0
+for i in Euclidean_result:
+    if distance_val[count] < threshold:
+        print('test_'+str(count+1)+'th - face image => {}'.format(i+1))
+    else:
+        print('test_' + str(count+1) + 'th - face image => unknown')
+    count += 1
+print(Euclidean_result)
+print(distance_val)
