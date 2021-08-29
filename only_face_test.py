@@ -20,7 +20,7 @@ def viewing_Eigenface(k,C_vectors):
 def fn(data_set,name = ''):
     filename = list()
     for i in range(data_set):
-        filename.append('E:\python\python_world/faces/only_face' + name + str(i+1 ) + '.PNG')
+        filename.append('E:/python/python_world/faces/only_face/OF' + name + str(i+1) + '.PNG')
     return filename
 
 def I_image(data_set,filename):
@@ -55,7 +55,7 @@ def eigen_image(C):
 
 def Euclidean_distance_weight(weight,weight_test):
     weight,weight_test = np.transpose(weight),np.transpose(weight_test)
-    Euclidean_result,distance_val = np.zeros(np.size(weight_test,0),dtype = int),np.zeros(np.size(weight_test,0),)
+    Euclidean_result,distance_val = np.zeros(np.size(weight_test,0),dtype = int),np.zeros(np.size(weight_test,0))
     distance = list()
     for i in range(test_set):
         for k in range(data_set):
@@ -65,25 +65,37 @@ def Euclidean_distance_weight(weight,weight_test):
         distance = list()
     return Euclidean_result,distance_val
 
+def Manhattan_distance_weight(weight,weight_test):
+    weight,weight_test = np.transpose(weight),np.transpose(weight_test)
+    Manhattan_result, Manhattan_val = np.zeros(np.size(weight_test,0),dtype = int),np.zeros(np.size(weight_test,0))
+    distance = list()
+    for i in range(test_set):
+        for k in range(data_set):
+            distance.append(np.sum(np.abs(weight[k] - weight_test[i])))
+        Manhattan_val[i] = np.min(distance)
+        Manhattan_result[i] = np.argmin(distance)
+        distance = list()
+    return Manhattan_result,Manhattan_val
+
 data_set = 20
 
 test_set = 7
 
 #register_images
-filename = fn(data_set,'/OF_') # image_name
+filename = fn(data_set,'_') # image_name
 
 I = I_image(data_set,filename) # cv2_image(original)
 
 #resgister_input(test)_image
-testname = fn(test_set,'_test/OFT_')
+testname = fn(test_set,'T_')
 
 t_I = I_image(test_set,testname)
 
 # # viewing_origin_image
 # viewing(data_set,I)
 
-# # viewing_testing_image
-# viewing(test_set,t_I)
+# viewing_testing_image
+viewing(test_set,t_I)
 
 # image_data_size -> 256 by 256 /
 dim = np.size(I,1) ** 2
@@ -128,14 +140,27 @@ weight_test = np.dot(A_eigenvectors,t_A)
 # Euclidean distance - weight_base - face recognition
 
 # Euclidean distance -> classify k-th face image
-threshold = 50000000
+
 Euclidean_result,distance_val = Euclidean_distance_weight(weight,weight_test)
 count = 0
+print('k가 {}입니다.'.format(k))
+print('==== Euclidean distance ====')
 for i in Euclidean_result:
-    if distance_val[count] < threshold:
-        print('test_'+str(count+1)+'th - face image => {}'.format(i+1))
-    else:
-        print('test_' + str(count+1) + 'th - face image => unknown')
+    print('test_' + str(count+1) + 'th - face image => {}'.format(i+1))
     count += 1
 print(Euclidean_result)
 print(distance_val)
+
+# Manhattan distance - weight_base - face recognition
+
+# Manhattan distance -> classify k-th face image
+
+Manhattan_result, Manhattan_val = Manhattan_distance_weight(weight,weight_test)
+count = 0
+
+print('==== Manhattan distance ====')
+for i in Manhattan_result:
+    print('test_' + str(count+1) + 'th - face image => {}'.format(i+1))
+    count += 1
+print(Manhattan_result)
+print(Manhattan_val)

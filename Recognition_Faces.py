@@ -94,14 +94,18 @@ t_I = I_image(test_set,testname)
 # # viewing_origin_image
 # viewing(data_set,I)
 
-# # viewing_testing_image
-# viewing(test_set,t_I)
+# viewing_testing_image
+viewing(test_set,t_I)
 
 # image_data_size -> 256 by 256 /
 dim = np.size(I,1) ** 2
 
 #creative_gamma_image
 g_I = gamma_image(data_set,I)
+
+# print('행의 개수 : {}'.format(np.size(g_I,0)))
+# print('열의 개수 : {}'.format(np.size(g_I,1)))
+# print(g_I)
 
 t_g_I = gamma_image(test_set,t_I)
 
@@ -110,6 +114,10 @@ p_I  = np.mean(g_I,axis = 1)
 
 #creative mean-zero-vector_phi_vector
 phi_I = phi_image(data_set,g_I,p_I)
+
+# print('행의 개수 : {}'.format(np.size(phi_I,0)))
+# print('열의 개수 : {}'.format(np.size(phi_I,1)))
+# print(phi_I)
 
 t_phi_I = phi_image(test_set,t_g_I,p_I)
 
@@ -123,9 +131,10 @@ C = np.dot(np.transpose(A),A)
 
 #creative eigen_values & eigen_vectors -> size sort (big -> small)
 C_values, C_vectors = eigen_image(C)
-
+# print('Eigenvalues : {}'.format(C_values))
+# print('Eigenvector : {}'.format(C_vectors))
 #viewing_eigenFaces
-k = 18
+k = 10
 viewing_Eigenface(k,C_vectors)
 
 #make weight -> train_set
@@ -133,9 +142,15 @@ A_eigenvectors = list()
 for i in range(k):
     A_eigenvectors.append(np.dot(A,C_vectors[i]))
 weight = np.dot(A_eigenvectors,A)
+# print('행 : {}'.format(np.size(weight,0)))
+# print('열 : {}'.format(np.size(weight,1)))
+# print(weight)
 
 #make weight -> input image
 weight_test = np.dot(A_eigenvectors,t_A)
+# print('행 : {}'.format(np.size(weight_test,0)))
+# print('열 : {}'.format(np.size(weight_test,1)))
+# print(weight_test)
 
 # Euclidean distance - weight_base - face recognition
 
