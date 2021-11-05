@@ -164,3 +164,14 @@ for i in Manhattan_result:
     count += 1
 print(Manhattan_result)
 print(Manhattan_val)
+
+#Restore_images
+restore_matrix = np.dot(np.transpose(A_eigenvectors),weight)
+restore_matrix = np.transpose(restore_matrix)
+restore_matrix = restore_matrix[:] + p_I
+for i in range(data_set):
+    restore_matrix[i] = np.round((restore_matrix[i] + p_I),0)
+    restore_img = restore_matrix[i].reshape((256,256))
+    cv2.imshow('restore_image' + str(i+1) + ".jpg",restore_img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
